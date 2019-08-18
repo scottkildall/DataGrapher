@@ -78,9 +78,10 @@ void loadData() {
  
    //-------- MAKES ACCESSIBLE FOR DRAWING --------/
    public float [][]sensorData;
+   private String filename;
  
   //-------- PRIVATE VARIABLES --------/
-  private String filename;
+  
   private String [] columnTitles;
   
   private int numColumns;

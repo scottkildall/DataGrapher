@@ -56,7 +56,7 @@ int numDrawDataColumns = 4;
 boolean[] drawDataColumn = new boolean[numDrawDataColumns];
 
 // number of data files we are using
-int numDataFiles = 6;
+int numDataFiles = 0;  //6;
 int currentDataFile = 0;    
  
 void setup() 
@@ -66,25 +66,7 @@ void setup()
   graphWidth = width - (graphHMargin*2);
   graphHeight = height - (graphVMargin*2);
   
-  // Allocate DataFiles and load the data
-  dataFiles = new DataFile[numDataFiles];
-  for( int i = 0; i < numDataFiles; i++ ) {
-      dataFiles[i] = new DataFile();
-  }
- 
-  
-  // hardcoded filenames, for testing — this is various sensor data
-  dataFiles[0].load("data/anaconda.csv");
-  dataFiles[1].load("data/gecko.csv");
-  dataFiles[2].load("data/08042019_sochariver.csv");
-  dataFiles[3].load("data/PIF_treedata.csv");
-  dataFiles[4].load("data/palm_leaves.csv");
-  dataFiles[5].load("data/rounded_leaves.csv");
-  
-  // flags to draw data or not
-   for (int i = 0; i < numColumns; i++ )
-    drawDataColumn[i] = true;
-    
+  loadDataFiles();
    
    // debug output
    //int numRows =  dataFiles[currentDataFile].getNumRows();
@@ -146,6 +128,10 @@ void plotData() {
       drawSamples(dataFiles[currentDataFile].sensorData[i], numRows);
     }
   }
+  
+  fill(255,255,255);
+  textSize(12);
+  text(dataFiles[currentDataFile].filename, graphHMargin + 50, height - graphVMargin + 15);
 }
 
 // index 0-3, different colors
@@ -162,6 +148,67 @@ void setGraphColor(int index) {
      stroke(255,255,255);
 }
 
+void loadDataFiles() {
+  String[] filenames = listFileNames(sketchPath("data"));
+  printArray(filenames);  
+  
+  // count num data files with .csv
+  numDataFiles = 0;
+  for( int i = 0; i < filenames.length; i++ ) {
+    if( filenames[i].endsWith( ".csv") ) {
+      numDataFiles++;
+      println(filenames[i]);
+    }
+  }
+  
+  println("total numDataFiles = " + numDataFiles );
+  
+  // Allocate DataFiles and load the data
+  dataFiles = new DataFile[numDataFiles];
+  for( int i = 0; i < numDataFiles; i++ ) {
+      dataFiles[i] = new DataFile();
+  }
+ 
+  // load up actual data fies
+  for( int i = 0; i < filenames.length; i++ ) {
+    if( filenames[i].endsWith( ".csv") ) {
+      dataFiles[currentDataFile].load("data/" + filenames[i]); 
+      currentDataFile++;
+    }
+  }
+  currentDataFile = 0;
+  
+  
+  // hardcoded filenames, for testing — this is various sensor data
+  //dataFiles[0].load("data/anaconda.csv");
+  //dataFiles[1].load("data/gecko.csv");
+  //dataFiles[2].load("data/08042019_sochariver.csv");
+  //dataFiles[3].load("data/PIF_treedata.csv");
+  //dataFiles[4].load("data/palm_leaves.csv");
+  //dataFiles[5].load("data/rounded_leaves.csv");
+  
+  // flags to draw data or not
+   for (int i = 0; i < numColumns; i++ )
+    drawDataColumn[i] = true;
+    
+  
+}
+
+// This function returns all the files in a directory as an array of Strings  
+String[] listFileNames(String dir) {
+  println(sketchPath());
+  println(dir);
+  
+  File file = new File(dir);
+  if (file.isDirectory()) {
+    String names[] = file.list();
+    return names;
+  } else {
+    // If it's not a directory
+    return null;
+  }
+}
+  
 void outputSamples( float [] sensorData, int numData ) { 
   println("sample values:");
   
