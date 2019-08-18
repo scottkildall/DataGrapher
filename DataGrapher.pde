@@ -56,7 +56,7 @@ int numDrawDataColumns = 4;
 boolean[] drawDataColumn = new boolean[numDrawDataColumns];
 
 // number of data files we are using
-int numDataFiles = 4;
+int numDataFiles = 6;
 int currentDataFile = 0;    
  
 void setup() 
@@ -68,25 +68,27 @@ void setup()
   
   // Allocate DataFiles and load the data
   dataFiles = new DataFile[numDataFiles];
-  dataFiles[0] = new DataFile();
-  dataFiles[1] = new DataFile();
-  dataFiles[2] = new DataFile();
-  dataFiles[3] = new DataFile();
+  for( int i = 0; i < numDataFiles; i++ ) {
+      dataFiles[i] = new DataFile();
+  }
+ 
   
   // hardcoded filenames, for testing — this is various sensor data
   dataFiles[0].load("data/anaconda.csv");
   dataFiles[1].load("data/gecko.csv");
   dataFiles[2].load("data/08042019_sochariver.csv");
   dataFiles[3].load("data/PIF_treedata.csv");
-
+  dataFiles[4].load("data/palm_leaves.csv");
+  dataFiles[5].load("data/rounded_leaves.csv");
+  
   // flags to draw data or not
    for (int i = 0; i < numColumns; i++ )
     drawDataColumn[i] = true;
     
    
    // debug output
-   int numRows =  dataFiles[currentDataFile].getNumRows();
-   outputSamples(dataFiles[currentDataFile].sensorData[1], 5000);
+   //int numRows =  dataFiles[currentDataFile].getNumRows();
+   //outputSamples(dataFiles[currentDataFile].sensorData[1], 5000);
 }
 
 void draw() {
@@ -113,7 +115,7 @@ void keyPressed() {
     if (keyCode == LEFT) {
       currentDataFile--;
       if( currentDataFile < 0 )
-        currentDataFile = numDataFiles;
+        currentDataFile = numDataFiles-1;
     }
     else if (keyCode == RIGHT) {
       currentDataFile++;
